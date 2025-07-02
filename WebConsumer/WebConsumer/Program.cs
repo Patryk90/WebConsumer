@@ -2,8 +2,6 @@
 using WebConsumer.Exceptions;
 using WebConsumer.Services;
 
-Console.WriteLine("Hello, World!");
-
 try
 {
     var stopwatch = Stopwatch.StartNew();

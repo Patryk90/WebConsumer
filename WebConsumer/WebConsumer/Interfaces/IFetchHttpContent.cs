@@ -1,4 +1,4 @@
-﻿namespace WebConsumer.Services;
+﻿namespace WebConsumer.Interfaces;
 
 public interface IFetchHttpContent
 {
