@@ -1,4 +1,5 @@
 ﻿using WebConsumer.Exceptions;
+using WebConsumer.Interfaces;
 
 namespace WebConsumer.Services;
 
