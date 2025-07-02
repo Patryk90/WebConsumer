@@ -29,7 +29,7 @@ public class StreamContentReader : IStreamContentReader
 
             return responseBytes.ToArray();
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException)
         {
             throw new ErrorCodeException(ErrorCode.TaskCancelled, $"{nameof(FetchStreamAsync)} call was cancelled");
         }

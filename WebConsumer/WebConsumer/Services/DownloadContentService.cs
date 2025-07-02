@@ -19,7 +19,7 @@ public class DownloadContentService : IDownloadContentService
 
             return await response.Content.ReadAsStreamAsync(cancellationToken);
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException)
         {
             throw new ErrorCodeException(ErrorCode.TaskCancelled, $"{nameof(GetUrlContentStreamAsync)} call was cancelled");
         }
