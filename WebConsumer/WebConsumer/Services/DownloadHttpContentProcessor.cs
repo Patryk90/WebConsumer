@@ -11,28 +11,39 @@ public class DownloadHttpContentProcessor(
 {
     public Task DownloadAsync(CancellationToken cancellationToken)
     {
-        var urls = resourcesProvider.GetResources().ToArray();
-
-        if (urls.Length <= 0)
+        try
         {
+            var urls = resourcesProvider.GetResources().ToArray();
+
+            if (urls.Length <= 0)
+            {
+                return Task.CompletedTask;
+            }
+
+            var tasks = new List<Task>(urls.Length);
+
+            foreach (var url in urls)
+            {
+                var task = GetHttpContent(url, cancellationToken);
+
+                tasks.Add(task);
+            }
+
+            Task.WaitAll(tasks.ToArray(), cancellationToken);
+
             return Task.CompletedTask;
         }
-
-        var tasks = new List<Task>(urls.Length);
-
-        foreach (var url in urls)
+        catch (ErrorCodeException e)
         {
-            var task = GetHttpContent(url, cancellationToken);
-
-            tasks.Add(task);
+            throw e;
         }
-
-        Task.WaitAll(tasks.ToArray(), cancellationToken);
-
-        return Task.CompletedTask;
+        catch (OperationCanceledException)
+        {
+            throw new ErrorCodeException(ErrorCode.TaskCancelled, $"{nameof(DownloadAsync)} call was cancelled");
+        }
     }
 
-    public async Task GetHttpContent(string url, CancellationToken cancellationToken)
+    private async Task GetHttpContent(string url, CancellationToken cancellationToken)
     {
         try
         {
@@ -47,7 +58,7 @@ public class DownloadHttpContentProcessor(
         {
             throw;
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException)
         {
             throw new ErrorCodeException(ErrorCode.TaskCancelled, $"{nameof(GetHttpContent)} call was cancelled");
         }
