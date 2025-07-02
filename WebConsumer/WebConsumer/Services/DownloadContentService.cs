@@ -3,7 +3,7 @@ using WebConsumer.Interfaces;
 
 namespace WebConsumer.Services;
 
-public class DownloadContentService : IDownloadContentService
+public class DownloadContentService(IHttpClientFactory? httpClientFactory) : IDownloadContentService
 {
     public async Task<Stream> GetUrlContentStreamAsync(string url, CancellationToken cancellationToken)
     {
@@ -11,9 +11,11 @@ public class DownloadContentService : IDownloadContentService
 
         try
         {
-            var httpClient = new HttpClient();
+            var httpClient = httpClientFactory.CreateClient("ServiceHttpClient");
 
-            response = await httpClient.GetAsync(url, cancellationToken);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+            
+            response = await httpClient.SendAsync(requestMessage, cancellationToken);
 
             response.EnsureSuccessStatusCode();
 

@@ -33,6 +33,10 @@ public class DownloadHttpContentProcessor(
 
             return Task.CompletedTask;
         }
+        catch (ErrorCodeException e)
+        {
+            throw e;
+        }
         catch (OperationCanceledException)
         {
             throw new ErrorCodeException(ErrorCode.TaskCancelled, $"{nameof(DownloadAsync)} call was cancelled");
